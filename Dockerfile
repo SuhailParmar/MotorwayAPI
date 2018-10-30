@@ -1,24 +1,9 @@
-# docker build . -t mtw:01
+# Lightweight Python Image
+FROM python:3.6-alpine
 
-FROM alpine:3.7
-WORKDIR /app
-
-RUN mkdir /app/lib
+RUN mkdir /app
 COPY requirements.txt /app
-
-#COPY lib /app/lib
-#COPY main.py /app
-
-# Install Python
-RUN apk add --no-cache python3 && \
-    python3 -m ensurepip && \
-    rm -r /usr/lib/python*/ensurepip && \
-    pip3 install --upgrade pip setuptools && \
-    if [ ! -e /usr/bin/pip ]; then ln -s pip3 /usr/bin/pip ; fi && \
-    if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/python3 /usr/bin/python; fi && \
-rm -r /root/.cache
-
-# 2 External dependencies
 RUN pip install -r /app/requirements.txt
+RUN rm /apprequirements.txt
 
-CMD ["python3", "/app/main.py"]
+ENV PYTHONUNBUFFERED 1
