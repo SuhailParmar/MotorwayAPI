@@ -4,3 +4,4 @@ __pycache__/*
 config.py
 *.pyc
 *.log
+motorway_env
