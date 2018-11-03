@@ -5,3 +5,4 @@ config.py
 *.pyc
 *.log
 motorway_env
+motorway_db/db-config.sh
