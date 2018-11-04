@@ -1,4 +1,30 @@
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
+
+
+class MotorwayEventManager(models.Manager):
+    def create_event(self,
+                     event_id,
+                     motorway,
+                     direction,
+                     junction,
+                     metadata,
+                     reason,
+                     closest_cities,
+                     time_timestamp,
+                     time_day_worded,
+                     time_year,
+                     time_day_numerical,
+                     time_hour,
+                     time_minutes,
+                     time_seconds):
+
+        event = self.create(
+            event_id, motorway, direction, junction, metadata, reason,
+            closest_cities, time_timestamp, time_day_worded, time_year,
+            time_day_numerical, time_hour, time_minutes, time_seconds,)
+
+        return event
 
 
 class MotorwayEvent(models.Model):
@@ -9,21 +35,31 @@ class MotorwayEvent(models.Model):
                    ('Wed', "Wed"), ('Thu', 'Thu'), ('Fri', 'Fri')]
     year_options = [(2017, 2017), (2018, 2018)]
 
-    event_id = models.IntegerField(primary_key=True)
+    event_id = models.BigIntegerField(primary_key=True)
+
+    junction = ArrayField(
+        models.IntegerField(),
+        size=3
+    )
+
+    closest_cities = ArrayField(
+        models.CharField(max_length=255)
+    )
+
     motorway = models.IntegerField(choices=motorway_options)
     direction = models.CharField(max_length=1, choices=direction_options)
-    junction = models.CharField(max_length=255)  # Temporary
     metadata = models.CharField(max_length=255)
     reason = models.CharField(max_length=255)
-    closest_cities = models.CharField(max_length=255)
 
-    time_timestamp = models.CharField(max_length=255)
+    time_timestamp = models.DateTimeField()
     time_day_worded = models.CharField(max_length=3, choices=day_options)
     time_year = models.IntegerField(choices=year_options)
     time_day_numerical = models.IntegerField()
     time_hour = models.IntegerField()
     time_minutes = models.IntegerField()
     time_seconds = models.IntegerField()
+
+    objects = MotorwayEventManager()
 
     def __str__(self):
         return self.get_event_id
