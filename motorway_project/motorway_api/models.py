@@ -46,12 +46,11 @@ class MotorwayEvent(models.Model):
         models.CharField(max_length=255)
     )
 
-    # extra_information = models.CharField(max_length=255)
+    extra_information = models.CharField(blank=True, max_length=255)
     motorway = models.IntegerField(choices=motorway_options)
     direction = models.CharField(max_length=1, choices=direction_options)
     metadata = models.CharField(max_length=255)
     reason = models.CharField(max_length=255)
-
     time_timestamp = models.DateTimeField()
     time_day_worded = models.CharField(max_length=3, choices=day_options)
     time_year = models.IntegerField(choices=year_options)
