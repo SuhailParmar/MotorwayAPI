@@ -1,14 +1,22 @@
 from rest_framework.generics import ListAPIView
 from rest_framework.generics import CreateAPIView
-from rest_framework.generics import DestroyAPIView
-
+from rest_framework.generics import RetrieveDestroyAPIView
 from .models import MotorwayEvent
 from .serializers import MotorwayEventSerializer
+
 
 """
 Views are how to get objects from the database
 https://www.django-rest-framework.org/api-guide/generic-views/#generic-views
 """
+
+
+class RetrieveDestroyEventView(RetrieveDestroyAPIView):
+    """
+    Get and DELETE from id /events/pk
+    """
+    queryset = MotorwayEvent.objects.all()
+    serializer_class = MotorwayEventSerializer
 
 
 class ListAllEventsView(ListAPIView):
