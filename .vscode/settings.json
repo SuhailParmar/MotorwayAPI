@@ -1,0 +1,3 @@
+{
+    "python.pythonPath": "${workspaceFolder}/motorway_env/bin/python"
+}
