@@ -46,6 +46,7 @@ class MotorwayEvent(models.Model):
         models.CharField(max_length=255)
     )
 
+    # extra_information = models.CharField(max_length=255)
     motorway = models.IntegerField(choices=motorway_options)
     direction = models.CharField(max_length=1, choices=direction_options)
     metadata = models.CharField(max_length=255)
