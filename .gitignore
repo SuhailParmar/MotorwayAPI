@@ -4,3 +4,4 @@ __pycache__/*
 *.log
 motorway_env
 motorway_db/db-config.sh
+motorway_db/pg_data/*
