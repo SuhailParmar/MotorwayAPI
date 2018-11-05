@@ -2,7 +2,7 @@ version: "2.3"
 services:
   # Ensure to source db-config.sh
   motorway_api:
-    build: .
+    build: ./motorway_project
     command: python3 manage.py runserver 0.0.0.0:8000
     #depends_on:
     #  motorway_db:
@@ -16,7 +16,7 @@ services:
       - "8000:8000"
     restart: on-failure
     volumes:
-      - ./motorway_project:/app
+      - /home/suhailparmar/Projects/MotorwayAPI/motorway_project:/app/
     working_dir: "/app/"
 
   motorway_db:
