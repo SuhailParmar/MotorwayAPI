@@ -103,11 +103,14 @@ class TestEventsEndpoint():
         assert self.event_id == data['event_id']
 
     def test_filtered_events(self):
+        # Post json_payload
         self.post_event()
+        # Create a new event (id and junction)
         self.json_payload['event_id'] = 1052482906797428738
         self.json_payload['junction'] = [2]
+        # Post second json_payload
         self.post_event()
-
+        # Get with query params, should be one event
         response = self.client.get(
             reverse("create-filter"), {'junction': [2]})
 
