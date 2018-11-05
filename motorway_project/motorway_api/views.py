@@ -2,8 +2,6 @@ from rest_framework.generics import ListAPIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.generics import RetrieveDestroyAPIView
 from rest_framework.generics import ListCreateAPIView
-from rest_framework import permissions
-from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 from .models import MotorwayEvent
 from .serializers import MotorwayEventSerializer
 
@@ -35,7 +33,5 @@ class CreateFilterView(ListCreateAPIView):
 class ListAllEventsView(ListAPIView):
     """ Return a list of all the MotorwayEvents mapped to /all """
     # Testing Permissions to view all
-    permission_classes = [permissions.IsAuthenticated, TokenHasScope]
-    required_scopes = ['read']
     queryset = MotorwayEvent.objects.all()
     serializer_class = MotorwayEventSerializer
