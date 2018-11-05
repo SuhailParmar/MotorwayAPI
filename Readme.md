@@ -34,4 +34,27 @@ url = "/api/events?day='Wed'"
 url = "/api/events?day='10'"
 ```
 
+### OAuth issues
 
+### AIM
+
+The /events/pk        GET          : Anyone can access
+the /events/?filter   GET          : Anyone can access
+The /events/all       GET          : Requires Authorization
+The /events/pk        DELETE       : Requires Authorization
+The /events/          POST         : Requires Authorization
+
+Able to use oauth in practise but I have issues with my tests failing as the test needs to bypass authentication.
+
+```
+    response = client2.post(
+        'http://localhost:8000/oauth2/token/',
+        {
+            'grant_type': 'client_credentials',
+            'client_id': getenv('TEST_CLIENT_ID'),
+            'client_secret': getenv('TEST_CLIENT_SECRET')
+        },
+        content_type='application/x-www-form-urlencoded',
+    )
+
+``````
