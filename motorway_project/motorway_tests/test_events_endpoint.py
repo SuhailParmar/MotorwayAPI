@@ -57,7 +57,7 @@ class TestEventsEndpoint():
         After every test the db is wiped
         '''
         return self.client.post(
-            reverse('create'),
+            reverse('create-filter'),
             data=self.json_payload,
             format="json"
         )
@@ -101,3 +101,17 @@ class TestEventsEndpoint():
         response = self.client.get(reverse("events-all"))
         data = response.data[0]  # Returns an array of events
         assert self.event_id == data['event_id']
+
+    def test_filtered_events(self):
+        self.post_event()
+        self.json_payload['event_id'] = 1052482906797428738
+        self.json_payload['junction'] = [2]
+        self.post_event()
+
+        response = self.client.get(
+            reverse("create-filter"), {'junction': [2]})
+
+        assert len(response.data) == 1
+        event = response.data[0]
+        assert event["junction"] == [2]
+        assert event["event_id"] == 1052482906797428738
