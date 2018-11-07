@@ -1,33 +1,34 @@
 import pytest
-from events_helper import Event, APIRequests
-from rest_framework.test import APIClient
-from django.urls import reverse
-import requests
+from helpers.api_requests import APIRequests
+from helpers.event import Event
+
 
 @pytest.mark.django_db
 class TestEventsAllEndpoint:
     """
     Ensure that the /events/all endpoint is fully functional
     """
-    e = Event()  # Build generic payload
-    json_payload = e.build_payload()
+    event_id_1 = 101
+    event_id_2 = 102
     client = APIRequests()
 
     def test_events_all_endpoint(self):
+        e = Event(event_id=self.event_id_1)  # Build generic payload
+        json_payload = e.build_payload()
 
-        status_code = self.client.post_event(self.json_payload)
+        status_code = self.client.post_event(json_payload)
         assert status_code == 201
 
         # Post a second Event ID and build the payload
-        second_id = 9052482906797428738
-        self.e.event_id = second_id
-        json_payload = self.e.build_payload()
+        json_payload["event_id"] = self.event_id_2
         status_code = self.client.post_event(json_payload)
-
         assert status_code == 201
 
-        response = self.client.get_all_ep()
-
+        response = self.client.get_from_all_endpoint()
         assert len(response) == 2
-        assert response[0]['event_id'] == 1052482906797428737
-        assert response[1]['event_id'] == 9052482906797428738
+        assert response[0]['event_id'] == self.event_id_1
+        assert response[1]['event_id'] == self.event_id_2
+
+    def test_clear_down(self):
+        assert self.client.delete_event(self.event_id_1) == 204
+        assert self.client.delete_event(self.event_id_2) == 204
