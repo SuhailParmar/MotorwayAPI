@@ -20,14 +20,21 @@ class APIRequests():
         self.post_ep = reverse('create-filter')
         self.events_ep = '/api/events/'
 
-    def get_auth_token(self):
+    def get_auth_token(self, scope):
         """
         Authenticate to unmocked API using test credentials
         """
         url = self.base_url + self.token_ep
-        client_id = getenv('TEST_CLIENT_ID', 'test_id')
-        client_secret = getenv('TEST_CLIENT_SECRET', 'test_secret')
         grant_type = "client_credentials"
+
+        if scope == 'read':
+            client_id = getenv('TEST_CLIENT_R_ID', 'test_id')
+            client_secret = getenv('TEST_CLIENT_R_SECRET', 'test_secret')
+
+        elif scope == 'write':
+            client_id = getenv('TEST_CLIENT_W_ID', 'test_w_id')
+            client_secret = getenv('TEST_CLIENT_W_SECRET', 'test_w_secret')
+
 
         request = post(url,  # Request Auth token
                        data="grant_type={0}&client_id={1}&client_secret={2}"
@@ -51,13 +58,17 @@ class APIRequests():
         force_authenticate(req, user=None, token=self.get_fake_auth())
         return req
 
-    def post_event(self, json_payload):
+    def post_event(self, json_payload, token=None):
         """
         Post to an un-mocked instance of the API
         """
         url = self.base_url + self.post_ep
         j = dumps(json_payload)
-        request = post(url, data=j, headers={'Content-Type': 'application/json'})
+
+        if token:
+            request = post(url, data=j, headers={'Content-Type': 'application/json', 'Authorization': "Bearer {0}".format(token)})
+        else:
+            request = post(url, data=j, headers={'Content-Type': 'application/json'})
 
         if loads(request.content) == {'event_id': ['motorway event with this event id already exists.']}:
             print("Event {0} already pre-exists :)".format(json_payload['event_id']))

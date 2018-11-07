@@ -31,7 +31,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 AUTHENTICATION_BACKENDS = (
-    'oauth2_provider.backends.OAuth2Backend',
+    'django.contrib.auth.backends.ModelBackend',
+    'oauth2_provider.backends.OAuth2Backend'
 )
 
 INSTALLED_APPS = [

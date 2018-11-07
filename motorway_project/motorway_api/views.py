@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticate
 from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
 from .models import MotorwayEvent
 from .serializers import MotorwayEventSerializer
+import logging
 
 """
 Views are how to get objects from the database
@@ -25,6 +26,8 @@ class RetrieveDestroyEventView(RetrieveDestroyAPIView):
 class CreateFilterView(ListCreateAPIView):
     """ POST (create) and GET (filtered) events at /events"""
     serializer_class = MotorwayEventSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    required_scopes = ['write']
 
     def get_queryset(self):
         query_params = self.request.query_params
@@ -34,9 +37,7 @@ class CreateFilterView(ListCreateAPIView):
 
 class ListAllEventsView(ListAPIView):
     """ Return a list of all the MotorwayEvents mapped to /all """
-    # Testing Permissions to view all
     permission_classes = [TokenHasScope]
-
     required_scopes = ['read']
     queryset = MotorwayEvent.objects.all()
     serializer_class = MotorwayEventSerializer
