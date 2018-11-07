@@ -1,7 +1,8 @@
 from rest_framework.test import APIClient
+from requests import post, get
 from django.urls import reverse
+from os import getenv
 import json
-
 
 class Event():
 
@@ -49,25 +50,38 @@ class Event():
         return payload
 
 
-class ApiClientHelper():
+class APIRequests():
 
-    client = APIClient()
+    def __init__(self):
+        self.base_url = 'http://localhost:8000'
+        self.token_ep = '/oauth2/token/'
+        self.all_ep = reverse('events-all') # Protected EP
+        self.post_ep = reverse('create-filter')
 
-    def get_event(self, url):
-        return self.client.get(url)
+    def get_auth_token(self):
+        url = self.base_url + self.token_ep
+        client_id = getenv('TEST_CLIENT_ID', 'test_id')
+        client_secret = getenv('TEST_CLIENT_SECRET', 'test_secret')
+        grant_type = "client_credentials"
 
-    def post_event(self, json_payload, url=None):
-        '''
-        After every test the db is wiped
-        '''
-        if url is None:
-            url = reverse('create-filter')
+        request = post(url,  # Request Auth token
+                       data="grant_type={0}&client_id={1}&client_secret={2}"
+                       .format(grant_type, client_id, client_secret),
+                       headers={'Content-Type': 'application/x-www-form-urlencoded'})
 
-        return self.client.post(
-            url,
-            data=json_payload,
-            format="json"
-        )
+        if request.status_code != 200:
+            raise ValueError
 
-    def get_api_client(self):
-        return self.client
+        content = json.loads(request.content)
+        return content['access_token']
+
+    def get_all_ep(self):
+        url = self.base_url + self.all_ep
+        token = self.get_auth_token()
+        response = get(url, headers={'Authorization': "Bearer {}".format(token)})
+        return response.content
+
+    def post_event(self, json_payload):
+        url = self.base_url + self.post_ep
+        request = post(url, data=json_payload, headers={'Content-Type': 'application/json'})
+        return request.status_code
