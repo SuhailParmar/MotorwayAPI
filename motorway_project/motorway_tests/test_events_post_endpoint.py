@@ -7,7 +7,8 @@ from helpers.event import Event
 class TestPostEndpoint():
 
     client = APIRequests()
-    e = Event(event_id=101)
+    event_id_1 = 101
+    e = Event(event=event_id_1)
     json_payload = e.build_payload()
 
     def test_unauthorized_when_post_event(self):
@@ -18,6 +19,9 @@ class TestPostEndpoint():
 
     def test_authorized_post_with_token(self):
         # Using the real post endpoint with a valid token
-        token = self.client.get_auth_token(scope='Write')
+        token = self.client.get_auth_token(scope='write')
         status_code = self.client.post_event(self.json_payload, token)
         assert status_code == 201
+
+    def test_clear_down(self):
+        assert self.client.delete_event(self.event_id_1) == 204

@@ -15,13 +15,13 @@ class TestEventsAllEndpoint:
     def test_events_all_endpoint(self):
         e = Event(event_id=self.event_id_1)  # Build generic payload
         json_payload = e.build_payload()
-
-        status_code = self.client.post_event(json_payload)
+        token = self.client.get_auth_token(scope='write')
+        status_code = self.client.post_event(json_payload, token)
         assert status_code == 201
 
         # Post a second Event ID and build the payload
         json_payload["event_id"] = self.event_id_2
-        status_code = self.client.post_event(json_payload)
+        status_code = self.client.post_event(json_payload, token)
         assert status_code == 201
 
         response = self.client.get_from_all_endpoint()
