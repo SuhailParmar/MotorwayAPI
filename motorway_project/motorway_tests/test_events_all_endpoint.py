@@ -2,11 +2,6 @@ import pytest
 from events_helper import Event, ApiClientHelper
 from rest_framework.test import APIClient
 from django.urls import reverse
-import json
-from os import getenv
-from rest_framework.test import force_authenticate
-from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
 
 
 @pytest.mark.django_db
@@ -17,10 +12,6 @@ class TestEventsAllEndpoint:
     e = Event()  # Build generic payload
     json_payload = e.build_payload()
     client = ApiClientHelper()
-
-    def a_test_auth(self):
-        assert self.response.status_code == 200
-        assert'access_token' in json.loads(self.response.content)
 
     def test_events_all_endpoint(self):
 

@@ -38,11 +38,16 @@ url = "/api/events?day='10'"
 
 ### AIM
 
-The /events/pk        GET          : Anyone can access
-the /events/?filter   GET          : Anyone can access
-The /events/all       GET          : Requires Authorization
-The /events/pk        DELETE       : Requires Authorization
-The /events/          POST         : Requires Authorization
+Endpoint          METHOD       Requires Auth?
+/events/pk        GET          : Anyone can access
+/events/?filter   GET          : Anyone can access
+/events/all       GET          : Requires Authorization
+/events/pk        DELETE       : Requires Authorization
+/events/          POST         : Requires Authorization
+
+
+https://scotch.io/tutorials/build-a-rest-api-with-django-a-test-driven-approach-part-2
+
 
 Able to use oauth in practise but I have issues with my tests failing as the test needs to bypass authentication.
 
