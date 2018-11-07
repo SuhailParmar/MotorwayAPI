@@ -2,11 +2,10 @@ from rest_framework.generics import ListAPIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.generics import RetrieveDestroyAPIView
 from rest_framework.generics import ListCreateAPIView
-from rest_framework.permissions import IsAuthenticatedOrReadOnly, IsAuthenticated
-from oauth2_provider.contrib.rest_framework import TokenHasReadWriteScope, TokenHasScope
+from oauth2_provider.contrib.rest_framework import TokenMatchesOASRequirements
+from oauth2_provider.contrib.rest_framework import TokenHasScope
 from .models import MotorwayEvent
 from .serializers import MotorwayEventSerializer
-import logging
 
 """
 Views are how to get objects from the database
@@ -26,8 +25,11 @@ class RetrieveDestroyEventView(RetrieveDestroyAPIView):
 class CreateFilterView(ListCreateAPIView):
     """ POST (create) and GET (filtered) events at /events"""
     serializer_class = MotorwayEventSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-    required_scopes = ['write']
+    permission_classes = [TokenMatchesOASRequirements]
+    required_alternate_scopes = {
+        "GET": [["read"]],
+        "POST": [["create"]],
+    }
 
     def get_queryset(self):
         query_params = self.request.query_params

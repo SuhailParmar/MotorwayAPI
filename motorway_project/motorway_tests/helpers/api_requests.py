@@ -16,32 +16,36 @@ class APIRequests():
     def __init__(self):
         self.base_url = 'http://localhost:8000'
         self.token_ep = '/oauth2/token/'
-        self.all_ep = reverse('events-all') # Protected EP
+        self.all_ep = reverse('events-all')  # Protected EP
         self.post_ep = reverse('create-filter')
         self.events_ep = '/api/events/'
 
     def get_auth_token(self, scope):
         """
         Authenticate to unmocked API using test credentials
+        Pre-Req: Ensure 2 apps are registered: Read and Write
+
         """
         url = self.base_url + self.token_ep
         grant_type = "client_credentials"
 
         if scope == 'read':
-            client_id = getenv('TEST_CLIENT_R_ID', 'test_id')
-            client_secret = getenv('TEST_CLIENT_R_SECRET', 'test_secret')
+            client_id = getenv('TEST_CLIENT_R_ID', 'test_read_id')
+            client_secret = getenv('TEST_CLIENT_R_SECRET', 'test_read_secret')
 
         elif scope == 'write':
-            client_id = getenv('TEST_CLIENT_W_ID', 'test_w_id')
-            client_secret = getenv('TEST_CLIENT_W_SECRET', 'test_w_secret')
+            client_id = getenv('TEST_CLIENT_W_ID', 'test_write_id')
+            client_secret = getenv('TEST_CLIENT_W_SECRET', 'test_write_secret')
 
-
+        print(client_id, client_secret)
         request = post(url,  # Request Auth token
                        data="grant_type={0}&client_id={1}&client_secret={2}"
                        .format(grant_type, client_id, client_secret),
                        headers={'Content-Type': 'application/x-www-form-urlencoded'})
 
         if request.status_code != 200:
+            print(request.status_code)
+            print(request.content)
             raise ValueError
 
         content = loads(request.content)
@@ -52,12 +56,6 @@ class APIRequests():
         req = client.post(self.post_ep, data=payload, format='json')
         return req.status_code
 
-    def fake_get_event(self):
-        client = APIRequestFactory()
-        req = client.get(self.all_ep)
-        force_authenticate(req, user=None, token=self.get_fake_auth())
-        return req
-
     def post_event(self, json_payload, token=None):
         """
         Post to an un-mocked instance of the API
@@ -66,13 +64,18 @@ class APIRequests():
         j = dumps(json_payload)
 
         if token:
-            request = post(url, data=j, headers={'Content-Type': 'application/json', 'Authorization': "Bearer {0}".format(token)})
+            request = post(url, data=j, headers={
+                           'Content-Type': 'application/json', 'Authorization': "Bearer {0}".format(token)})
         else:
-            request = post(url, data=j, headers={'Content-Type': 'application/json'})
+            request = post(url, data=j, headers={
+                           'Content-Type': 'application/json'})
 
-        if loads(request.content) == {'event_id': ['motorway event with this event id already exists.']}:
-            print("Event {0} already pre-exists :)".format(json_payload['event_id']))
-            return 201
+        if request.status_code == 400:
+            if loads(request.content) ==\
+                    {'event_id': ['motorway event with this event id already exists.']}:
+                print(
+                    "Event {0} already pre-exists :)".format(json_payload['event_id']))
+                return 201
 
         return request.status_code
 
@@ -89,7 +92,8 @@ class APIRequests():
         Get /all un-mocked, requires authentication
         """
         url = self.base_url + self.all_ep
-        token = self.get_auth_token()
-        response = get(url, headers={'Authorization': "Bearer {}".format(token), 'Content-Type': 'application/json'})
+        token = self.get_auth_token(scope='read')
+        response = get(url, headers={'Authorization': "Bearer {}".format(
+            token), 'Content-Type': 'application/json'})
 
         return loads(response.content)
