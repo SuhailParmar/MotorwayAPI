@@ -58,3 +58,31 @@ Able to use oauth in practise but I have issues with my tests failing as the tes
     )
 
 ``````
+
+### OAuth2
+
+How it works:
+
+Client (app wanting to use API)
+
+Resource Server (API client wants to use)
+
+User (Owner of the API grants permission)
+
+Authorization Server (approve or deny request)
+
+Create a User
+read_user  # http://localhost:8000/admin/auth/user/add/
+with a username and password
+
+Create/Register the Application
+http://localhost:8000/admin/oauth2_provider/application/add/
+
+- Give a name to this app (test_app)
+- register a client_id: (test_user)
+- register confidential & client_credentials
+- get client secret: (test_secret)
+
+Client -> User
+(client-credentials pls)
+
