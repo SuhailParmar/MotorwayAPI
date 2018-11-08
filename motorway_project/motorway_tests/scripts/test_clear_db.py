@@ -15,5 +15,5 @@ class TestClearDownDB():
         response = self.client.get_from_all_endpoint()
         for event in response:
             id = event["event_id"]
+            print("Deleting event {0}".format(id))
             assert self.client.delete_event(id) == 204
-            print("Deleted event {0}".format(id))

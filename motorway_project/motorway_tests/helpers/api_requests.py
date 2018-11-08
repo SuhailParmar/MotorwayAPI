@@ -37,7 +37,6 @@ class APIRequests():
             client_id = getenv('TEST_CLIENT_W_ID', 'test_write_id')
             client_secret = getenv('TEST_CLIENT_W_SECRET', 'test_write_secret')
 
-        print(client_id, client_secret)
         request = post(url,  # Request Auth token
                        data="grant_type={0}&client_id={1}&client_secret={2}"
                        .format(grant_type, client_id, client_secret),
@@ -56,7 +55,7 @@ class APIRequests():
         req = client.post(self.post_ep, data=payload, format='json')
         return req.status_code
 
-    def post_event(self, json_payload, token=None):
+    def post_event(self, json_payload, token=None, response=None):
         """
         Post to an un-mocked instance of the API
         """
@@ -65,7 +64,8 @@ class APIRequests():
 
         if token:
             request = post(url, data=j, headers={
-                           'Content-Type': 'application/json', 'Authorization': "Bearer {0}".format(token)})
+                           'Content-Type': 'application/json',
+                           'Authorization': "Bearer {0}".format(token)})
         else:
             request = post(url, data=j, headers={
                            'Content-Type': 'application/json'})
@@ -77,11 +77,42 @@ class APIRequests():
                     "Event {0} already pre-exists :)".format(json_payload['event_id']))
                 return 201
 
+        if response is not None:
+            data = loads(request.content)
+            return data
+
         return request.status_code
+
+    def get_event(self, id):
+        """
+        Get from an un-mocked instance of the API
+        """
+        url = self.base_url + self.events_ep + str(id)
+        response = get(url, headers={'Content-Type': 'application/json'})
+        return response.status_code
+
+    def get_filtered(self, token,  param={"junction": [5]}):
+        url = self.base_url + self.events_ep
+        response = get(url, headers={'Content-Type': 'application/json',
+                                     'Authorization': "Bearer {0}".format(token)},
+                       params=param)
+
+        if response.status_code != 200:
+            print(response.status_code, response.content)
+            raise ValueError
+
+        json_response = loads(response.content)
+        return json_response
+
+    def fake_filter_event(self, param={"junction": [5]}):
+        client = APIClient()
+        url = self.base_url + self.events_ep
+        req = client.get(url, data=param, format='json')
+        return req.status_code
 
     def delete_event(self, id):
         """
-        Delete to an un-mocked instance of the API
+        Delete from an un-mocked instance of the API
         """
         url = self.base_url + self.events_ep + str(id)
         response = delete(url, headers={'Content-Type': 'application/json'})
@@ -97,3 +128,9 @@ class APIRequests():
             token), 'Content-Type': 'application/json'})
 
         return loads(response.content)
+
+    def fake_get_all(self):
+        url = self.base_url + self.all_ep
+        client = APIClient()
+        req = client.get(self.post_ep, format='json')
+        return req.status_code
