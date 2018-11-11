@@ -16,7 +16,7 @@ class TestFilterEndpoint():
     e = Event(event_id=event_id_1, junction=junction_1)
 
     def test_unauthorized_when_post_event(self):
-        status_code = self.client.fake_filter_event(param={"junction": [5]})
+        status_code = self.client.get_filtered(token=None, param={"junction": [5]})
         assert status_code == 401
 
     def test_setup(self):
@@ -36,7 +36,7 @@ class TestFilterEndpoint():
 
     def test_able_to_filter_by_field(self):
         token = self.client.get_auth_token(scope='read')
-        response = self.client.get_filtered(token, param={"junction": [5]})
+        response = self.client.get_filtered(token, {"junction": [5]}, False)
 
         assert len(response) == 1
         # Should only filter one event_id_one

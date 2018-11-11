@@ -15,11 +15,8 @@ class TestEventsAllEndpoint:
     token = client.get_auth_token(scope='delete')
 
     def test_events_all_protected_endpoint(self):
-        """
-        Using a mocked instance as the api_requests.get_from_all
-        Retreives a token to authenticate to the endpoint.
-        """
-        status_code = self.client.fake_get_all()
+        # Don't use a token to authenticate
+        status_code = self.client.get_from_all_endpoint(token=None)
         assert status_code == 401
 
     def test_setup(self):
@@ -37,7 +34,8 @@ class TestEventsAllEndpoint:
         assert status_code == 201
 
     def test_events_all_endpoint(self):
-        response = self.client.get_from_all_endpoint()
+        token = self.client.get_auth_token(scope='read')
+        response = self.client.get_from_all_endpoint(token, False)
         assert len(response) == 2
         assert response[0]['event_id'] == self.event_id_1
         assert response[1]['event_id'] == self.event_id_2

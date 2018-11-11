@@ -17,8 +17,7 @@ class TestPostEndpoint():
 
     def test_unauthorized_to_post_without_token(self):
         # If no token present, in this case
-        # Using the fake_post_event func.
-        status_code = self.client.fake_post_event(self.json_payload)
+        status_code = self.client.post_event(self.json_payload, token=None)
         assert status_code == 401
 
     def test_authorized_post_with_token(self):
@@ -36,7 +35,7 @@ class TestPostEndpoint():
         assert self.json_payload.get('extra_information') is None
         # Request the client returns data not the status_code
         response_data = self.client.post_event(
-            self.json_payload, self.token, response='data')
+            self.json_payload, self.token, False)
         assert response_data["extra_information"] == ""
 
     def test_clear_down(self):

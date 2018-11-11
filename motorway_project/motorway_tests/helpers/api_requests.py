@@ -20,6 +20,15 @@ class APIRequests():
         self.post_ep = reverse('create-filter')
         self.events_ep = '/api/events/'
 
+    def delete_event(self, id, token):
+        """
+        Delete from an un-mocked instance of the API
+        """
+        url = self.base_url + self.events_ep + str(id)
+        response = delete(url, headers={'Content-Type': 'application/json',
+                                        'Authorization': "Bearer {0}".format(token)})
+        return response.status_code
+
     def get_auth_token(self, scope):
         """
         Authenticate to unmocked API using test credentials
@@ -44,25 +53,40 @@ class APIRequests():
         content = loads(request.content)
         return content['access_token']
 
-    def fake_post_event(self, payload):
-        client = APIClient()
-        req = client.post(self.post_ep, data=payload, format='json')
-        return req.status_code
+    def get_filtered(self, token,  param, return_status=True):
+        url = self.base_url + self.events_ep
+        response = get(url, headers={'Content-Type': 'application/json',
+                                     'Authorization': "Bearer {0}".format(token)},
+                       params=param)
 
-    def post_event(self, json_payload, token=None, response=None):
+        if return_status:
+            return response.status_code
+        return loads(response.content)
+
+    def get_from_all_endpoint(self, token, return_status=True):
         """
-        Post to an un-mocked instance of the API
+        Get /all un-mocked, requires authentication
+        """
+        url = self.base_url + self.all_ep
+        response = get(url, headers={'Authorization': "Bearer {}".format(
+            token), 'Content-Type': 'application/json'})
+
+        if return_status:
+            return response.status_code
+        return loads(response.content)
+
+    def post_event(self, json_payload, token, return_status=True):
+        """
+        Post to an un-mocked instance of the API,
+        @return_status: return the status code of the post request, or
+                        return the contents
         """
         url = self.base_url + self.post_ep
         j = dumps(json_payload)
 
-        if token:
-            request = post(url, data=j, headers={
-                           'Content-Type': 'application/json',
-                           'Authorization': "Bearer {0}".format(token)})
-        else:
-            request = post(url, data=j, headers={
-                           'Content-Type': 'application/json'})
+        request = post(url, data=j, headers={
+            'Content-Type': 'application/json',
+            'Authorization': "Bearer {0}".format(token)})
 
         if request.status_code == 400:
             if loads(request.content) ==\
@@ -71,61 +95,6 @@ class APIRequests():
                     "Event {0} already pre-exists :)".format(json_payload['event_id']))
                 return 201
 
-        if response is not None:
-            data = loads(request.content)
-            return data
-
-        return request.status_code
-
-    def get_event(self, id):
-        """
-        Get from an un-mocked instance of the API
-        """
-        url = self.base_url + self.events_ep + str(id)
-        response = get(url, headers={'Content-Type': 'application/json'})
-        return response.status_code
-
-    def get_filtered(self, token,  param={"junction": [5]}):
-        url = self.base_url + self.events_ep
-        response = get(url, headers={'Content-Type': 'application/json',
-                                     'Authorization': "Bearer {0}".format(token)},
-                       params=param)
-
-        if response.status_code != 200:
-            print(response.status_code, response.content)
-            raise ValueError
-
-        json_response = loads(response.content)
-        return json_response
-
-    def fake_filter_event(self, param={"junction": [5]}):
-        client = APIClient()
-        url = self.base_url + self.events_ep
-        req = client.get(url, data=param, format='json')
-        return req.status_code
-
-    def delete_event(self, id, token):
-        """
-        Delete from an un-mocked instance of the API
-        """
-        url = self.base_url + self.events_ep + str(id)
-        response = delete(url, headers={'Content-Type': 'application/json',
-                                        'Authorization': "Bearer {0}".format(token)})
-        return response.status_code
-
-    def get_from_all_endpoint(self):
-        """
-        Get /all un-mocked, requires authentication
-        """
-        url = self.base_url + self.all_ep
-        token = self.get_auth_token(scope='read')
-        response = get(url, headers={'Authorization': "Bearer {}".format(
-            token), 'Content-Type': 'application/json'})
-
-        return loads(response.content)
-
-    def fake_get_all(self):
-        url = self.base_url + self.all_ep
-        client = APIClient()
-        req = client.get(self.post_ep, format='json')
-        return req.status_code
+        if return_status:
+            return request.status_code
+        return loads(request.content)
