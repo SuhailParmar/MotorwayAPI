@@ -12,6 +12,7 @@ class TestEventsAllEndpoint:
     event_id_1 = 101
     event_id_2 = 102
     client = APIRequests()
+    token = client.get_auth_token(scope='delete')
 
     def test_events_all_protected_endpoint(self):
         """
@@ -22,7 +23,7 @@ class TestEventsAllEndpoint:
         assert status_code == 401
 
     def test_setup(self):
-        self.client.delete_event(1052482906797428737)
+        self.client.delete_event(1052482906797428737, self.token)
         e = Event(event_id=self.event_id_1)
         # Post one event to the db
         json_payload = e.build_payload()
@@ -42,5 +43,5 @@ class TestEventsAllEndpoint:
         assert response[1]['event_id'] == self.event_id_2
 
     def test_clear_down(self):
-        assert self.client.delete_event(self.event_id_1) == 204
-        assert self.client.delete_event(self.event_id_2) == 204
+        assert self.client.delete_event(self.event_id_1, self.token) == 204
+        assert self.client.delete_event(self.event_id_2, self.token) == 204

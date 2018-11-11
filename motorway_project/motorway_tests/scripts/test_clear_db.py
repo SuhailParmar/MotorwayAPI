@@ -13,7 +13,8 @@ class TestClearDownDB():
         pytest -vx test_clear_db.py
         """
         response = self.client.get_from_all_endpoint()
+        token = self.client.get_auth_token(scope='delete')
         for event in response:
             id = event["event_id"]
             print("Deleting event {0}".format(id))
-            assert self.client.delete_event(id) == 204
+            assert self.client.delete_event(id, token) == 204

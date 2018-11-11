@@ -2,6 +2,7 @@ import pytest
 from helpers.api_requests import APIRequests
 from helpers.event import Event
 
+
 @pytest.mark.django_db
 class TestFilterEndpoint():
     """
@@ -44,5 +45,6 @@ class TestFilterEndpoint():
         assert e1["event_id"] == self.event_id_1
 
     def test_clear_up(self):
-        assert self.client.delete_event(self.event_id_1) == 204
-        assert self.client.delete_event(self.event_id_2) == 204
+        token = self.client.get_auth_token(scope='delete')
+        assert self.client.delete_event(self.event_id_1, token) == 204
+        assert self.client.delete_event(self.event_id_2, token) == 204

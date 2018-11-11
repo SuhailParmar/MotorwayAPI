@@ -26,7 +26,8 @@ class TestPostEndpoint():
         status_code = self.client.post_event(self.json_payload, self.token)
         assert status_code == 201
         # Clear event from db
-        assert self.client.delete_event(self.event_id_1) == 204
+        token = self.client.get_auth_token(scope='delete')
+        assert self.client.delete_event(self.event_id_1, token) == 204
 
     def test_event_contains_extra_info_field_after_post(self):
         # The json_payload doesn't contain an extra_information field
@@ -39,4 +40,5 @@ class TestPostEndpoint():
         assert response_data["extra_information"] == ""
 
     def test_clear_down(self):
-        assert self.client.delete_event(self.event_id_1) == 204
+        token = self.client.get_auth_token(scope='delete')
+        assert self.client.delete_event(self.event_id_1, token) == 204
