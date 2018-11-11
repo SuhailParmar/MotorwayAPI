@@ -19,10 +19,10 @@ https://www.django-rest-framework.org/api-guide/generic-views/#generic-views
 class RetrieveDestroyEventView(RetrieveDestroyAPIView):
     """ Get and DELETE from id /events/pk """
 
-    # The DELETE an event needs ADMIN/AUTH permissions
-
-    queryset = MotorwayEvent.objects.all()
+    permission_classes = [TokenHasReadWriteScope]
     serializer_class = MotorwayEventSerializer
+    authentication_classes = [OAuth2Authentication]
+    queryset = MotorwayEvent.objects.all()
 
 
 class CreateFilterView(ListCreateAPIView):
@@ -39,7 +39,7 @@ class CreateFilterView(ListCreateAPIView):
 
 class ListAllEventsView(ListAPIView):
     """ Return a list of all the MotorwayEvents mapped to /all """
-    #permission_classes = [TokenHasScope]
-    #required_scopes = ['read']
+    permission_classes = [TokenHasScope]
+    required_scopes = ['read']
     queryset = MotorwayEvent.objects.all()
     serializer_class = MotorwayEventSerializer

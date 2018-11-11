@@ -104,12 +104,13 @@ class APIRequests():
         req = client.get(url, data=param, format='json')
         return req.status_code
 
-    def delete_event(self, id):
+    def delete_event(self, id, token):
         """
         Delete from an un-mocked instance of the API
         """
         url = self.base_url + self.events_ep + str(id)
-        response = delete(url, headers={'Content-Type': 'application/json'})
+        response = delete(url, headers={'Content-Type': 'application/json',
+                                        'Authorization': "Bearer {0}".format(token)})
         return response.status_code
 
     def get_from_all_endpoint(self):

@@ -16,7 +16,7 @@ class TestDeleteEndpoint():
 
     def test_unauthorized_to_delete(self):
         # Deleting without a token
-        status_code = self.client.delete_event(self.event_id_1)
+        status_code = self.client.delete_event(self.event_id_1, token=None)
         assert status_code == 401
 
     def test_setup(self):
@@ -33,5 +33,6 @@ class TestDeleteEndpoint():
         assert status_code == 201
 
     def test_clear_down(self):
-        assert self.client.delete_event(self.event_id_1) == 204
-        assert self.client.delete_event(self.event_id_2) == 204
+        token = self.client.get_auth_token(scope='delete')
+        assert self.client.delete_event(self.event_id_1, token) == 204
+        assert self.client.delete_event(self.event_id_2, token) == 204
