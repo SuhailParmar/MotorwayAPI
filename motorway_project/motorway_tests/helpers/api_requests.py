@@ -24,18 +24,12 @@ class APIRequests():
         """
         Authenticate to unmocked API using test credentials
         Pre-Req: Ensure 2 apps are registered: Read and Write
-
         """
         url = self.base_url + self.token_ep
         grant_type = "client_credentials"
 
-        if scope == 'read':
-            client_id = getenv('TEST_CLIENT_R_ID', 'test_read_id')
-            client_secret = getenv('TEST_CLIENT_R_SECRET', 'test_read_secret')
-
-        elif scope == 'write':
-            client_id = getenv('TEST_CLIENT_W_ID', 'test_write_id')
-            client_secret = getenv('TEST_CLIENT_W_SECRET', 'test_write_secret')
+        client_id = getenv('TEST_CLIENT_R_ID', 'test_r_id')
+        client_secret = getenv('TEST_CLIENT_R_SECRET', 'test_r_secret')
 
         request = post(url,  # Request Auth token
                        data="grant_type={0}&client_id={1}&client_secret={2}"
