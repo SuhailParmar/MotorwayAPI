@@ -102,7 +102,7 @@ REST_FRAMEWORK = {
 
 # OAuth2
 OAUTH2_PROVIDER = {
-    'SCOPES': {'read': 'Read Events', 'write': 'Create Events'}
+    'SCOPES': {'read': 'Read Events', 'write': 'Create Events', 'delete': 'Delete events'}
 }
 
 

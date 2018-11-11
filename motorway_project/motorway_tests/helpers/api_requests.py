@@ -2,7 +2,6 @@ from django.urls import reverse
 from os import getenv
 from json import loads, dumps
 from requests import post, get, delete
-from rest_framework.test import APIRequestFactory, APIClient
 
 
 class APIRequests():
@@ -16,7 +15,7 @@ class APIRequests():
     def __init__(self):
         self.base_url = 'http://localhost:8000'
         self.token_ep = '/oauth2/token/'
-        self.all_ep = reverse('events-all')  # Protected EP
+        self.all_ep = reverse('events-all')
         self.post_ep = reverse('create-filter')
         self.events_ep = '/api/events/'
 
