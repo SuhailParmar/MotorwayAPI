@@ -1,9 +1,7 @@
-from rest_framework.test import APIClient
-from django.urls import reverse
-import json
-
-
 class Event():
+    """
+    Python representation of a motorway_event
+    """
 
     def __init__(self, **kwargs):
         """
@@ -47,27 +45,3 @@ class Event():
             "time_year": self.time_year
         }
         return payload
-
-
-class ApiClientHelper():
-
-    client = APIClient()
-
-    def get_event(self, url):
-        return self.client.get(url)
-
-    def post_event(self, json_payload, url=None):
-        '''
-        After every test the db is wiped
-        '''
-        if url is None:
-            url = reverse('create-filter')
-
-        return self.client.post(
-            url,
-            data=json_payload,
-            format="json"
-        )
-
-    def get_api_client(self):
-        return self.client

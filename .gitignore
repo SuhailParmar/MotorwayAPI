@@ -5,3 +5,4 @@ __pycache__/*
 motorway_env
 motorway_db/db-config.sh
 motorway_db/pg_data/*
+motorway_project/.env
