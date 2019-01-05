@@ -21,7 +21,7 @@ All information regarding motorway events
 /api/events
 ```
 
-### Todo - Query based on params
+### Available queries
 ```python
 #Get events at timestamp
 url = "/api/events?timestamp='2018-10-17T08:54:13'"
@@ -39,30 +39,12 @@ url = "/api/events?day='10'"
 ### AIM
 
 Endpoint          METHOD       Requires Auth?
-/events/pk        GET          : Anyone can access
-/events/?filter   GET          : Anyone can access
+/events/pk        GET          : READ access
+/events/?filter   GET          : READ access
 /events/all       GET          : Requires Authorization
 /events/pk        DELETE       : Requires Authorization
 /events/          POST         : Requires Authorization
 
-
-https://scotch.io/tutorials/build-a-rest-api-with-django-a-test-driven-approach-part-2
-
-
-Able to use oauth in practise but I have issues with my tests failing as the test needs to bypass authentication.
-
-```
-    response = client2.post(
-        'http://localhost:8000/oauth2/token/',
-        {
-            'grant_type': 'client_credentials',
-            'client_id': getenv('TEST_CLIENT_ID'),
-            'client_secret': getenv('TEST_CLIENT_SECRET')
-        },
-        content_type='application/x-www-form-urlencoded',
-    )
-
-``````
 
 ### OAuth2
 
@@ -91,3 +73,8 @@ http://localhost:8000/admin/oauth2_provider/application/add/
 Client -> User
 (client-credentials pls)
 
+## We will potentially read from rabbit / allow for a post
+
+Potentially use celery for this functionality, celery will be perfoming the background task of binding to the rabbit queue listening for events and writing them to the db.
+
+TO avoid this uneccesary level of complexity, the *tweet converter* will be reponsible for posting the event to the API. But if testing reveals slow down on the POST endpoint then we shall look into this.
