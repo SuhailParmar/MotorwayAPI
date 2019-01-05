@@ -35,7 +35,7 @@ class MotorwayEvent(models.Model):
                    ('Thu', 'Thu'), ('Fri', 'Fri'), ('Sat', 'Sat'),
                    ('Sun', 'Sun')]
 
-    year_options = [(2017, 2017), (2018, 2018)]
+    year_options = [(2017, 2017), (2018, 2018), (2019, 2019)]
 
     event_id = models.BigIntegerField(primary_key=True)
 
