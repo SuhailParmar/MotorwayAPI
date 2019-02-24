@@ -29,8 +29,8 @@ class MotorwayEventManager(models.Manager):
 
 class MotorwayEvent(models.Model):
 
-    motorway_options = [(6, 6)]
-    direction_options = [('n', 'n'), ('s', 's'), ('e', 'e'), ('w', 'w')]
+    motorway_options = [(1, 1), (6, 6), (25, 25), (40, 40)]
+    direction_options = [('n', 'n'), ('s', 's'), ('e', 'e'), ('w', 'w'), ('c', 'c'), ('ac', 'ac')]
     day_options = [('Mon', 'Mon'), ('Tue', 'Tue'), ('Wed', "Wed"),
                    ('Thu', 'Thu'), ('Fri', 'Fri'), ('Sat', 'Sat'),
                    ('Sun', 'Sun')]
