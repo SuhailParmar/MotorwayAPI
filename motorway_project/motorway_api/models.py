@@ -14,7 +14,7 @@ class MotorwayEventManager(models.Manager):
                      time_timestamp,
                      time_day_worded,
                      time_year,
-                     time_day_numerical,
+                     time_day,
                      time_hour,
                      time_minutes,
                      time_seconds):
@@ -22,7 +22,7 @@ class MotorwayEventManager(models.Manager):
         event = self.create(
             event_id, motorway, direction, junction, metadata, reason,
             closest_cities, time_timestamp, time_day_worded, time_year,
-            time_day_numerical, time_hour, time_minutes, time_seconds,)
+            time_day, time_hour, time_minutes, time_seconds,)
 
         return event
 
@@ -30,12 +30,13 @@ class MotorwayEventManager(models.Manager):
 class MotorwayEvent(models.Model):
 
     motorway_options = [(1, 1), (6, 6), (25, 25), (40, 40)]
-    direction_options = [('n', 'n'), ('s', 's'), ('e', 'e'), ('w', 'w'), ('c', 'c'), ('ac', 'ac')]
+    direction_options = [('n', 'n'), ('s', 's'), ('e', 'e'),
+                         ('w', 'w'), ('c', 'c'), ('ac', 'ac')]
     day_options = [('Mon', 'Mon'), ('Tue', 'Tue'), ('Wed', "Wed"),
                    ('Thu', 'Thu'), ('Fri', 'Fri'), ('Sat', 'Sat'),
                    ('Sun', 'Sun')]
 
-    year_options = [(2017, 2017), (2018, 2018), (2019, 2019)]
+    year_options = [("2017", "2017"), ("2018", "2018"), ("2019", "2019")]
 
     event_id = models.BigIntegerField(primary_key=True)
 
@@ -49,17 +50,17 @@ class MotorwayEvent(models.Model):
     )
 
     extra_information = models.CharField(blank=True, max_length=255)
-    motorway = models.IntegerField(choices=motorway_options)
+    motorway = models.CharField(choices=motorway_options, max_length=4)
     direction = models.CharField(max_length=1, choices=direction_options)
     metadata = models.CharField(max_length=255)
     reason = models.CharField(max_length=255)
     time_timestamp = models.DateTimeField()
     time_day_worded = models.CharField(max_length=3, choices=day_options)
-    time_year = models.IntegerField(choices=year_options)
-    time_day_numerical = models.IntegerField()
-    time_hour = models.IntegerField()
-    time_minutes = models.IntegerField()
-    time_seconds = models.IntegerField()
+    time_year = models.CharField(max_length=4, choices=year_options)
+    time_day = models.CharField(max_length=10)
+    time_hour = models.CharField(max_length=3)
+    time_minutes = models.CharField(max_length=3)
+    time_seconds = models.CharField(max_length=3)
 
     objects = MotorwayEventManager()
 

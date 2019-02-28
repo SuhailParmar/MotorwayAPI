@@ -33,8 +33,8 @@ class CreateFilterView(ListCreateAPIView):
 
     def get_queryset(self):
         query_params = self.request.query_params
-        # Need to unpack query_params as multiple kwargs: id: 0, info: hello
-        return MotorwayEvent.objects.filter(**query_params)
+        return MotorwayEvent.objects.filter(
+            **query_params.dict())
 
 
 class ListAllEventsView(ListAPIView):
