@@ -1,20 +1,39 @@
 from rest_framework.generics import ListAPIView
-from rest_framework.generics import CreateAPIView
 from rest_framework.generics import RetrieveDestroyAPIView
 from rest_framework.generics import ListCreateAPIView
-from oauth2_provider.contrib.rest_framework import TokenMatchesOASRequirements
-from oauth2_provider.contrib.rest_framework import TokenHasScope, OAuth2Authentication, TokenHasReadWriteScope
-from oauth2_provider.views.generic import ReadWriteScopedResourceView
+from rest_framework.views import APIView
+from oauth2_provider.contrib.rest_framework import TokenHasScope, \
+    OAuth2Authentication, TokenHasReadWriteScope
 from .models import MotorwayEvent
 from .serializers import MotorwayEventSerializer
 from rest_framework.response import Response
-from rest_framework import status
-from oauth2_provider.decorators import protected_resource
+from .graphs import Graphs
+import logging
 """
 Views are how to get objects from the database
 https://www.django-rest-framework.org/api-guide/generic-views/#generic-views
 """
 
+
+class ImageView(APIView):
+
+    def post(self, request):
+        query_params = self.request.query_params
+        logging.warning(query_params)
+        ob = MotorwayEvent.objects.filter(**query_params.dict())
+        Graphs.iqp(ob)
+        #query_params = request
+        return Response(status=209)
+    """
+    def get_queryset(self):
+    #def get_context_data(self):
+        query_params = self.request.query_params #request["QUERY_STRING"]
+        logging.warning(query_params)
+        ob = MotorwayEvent.objects.filter(**query_params.dict())
+        Graphs.iqp(ob)
+        response = Response(status=200)
+        return response
+    """
 
 class RetrieveDestroyEventView(RetrieveDestroyAPIView):
     """ Get and DELETE from id /events/pk """
@@ -43,3 +62,4 @@ class ListAllEventsView(ListAPIView):
     required_scopes = ['read']
     queryset = MotorwayEvent.objects.all()
     serializer_class = MotorwayEventSerializer
+
