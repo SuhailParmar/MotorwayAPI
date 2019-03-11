@@ -49,7 +49,10 @@ class MotorwayEvent(models.Model):
         models.CharField(max_length=255)
     )
 
-    extra_information = models.CharField(blank=True, max_length=255)
+    extra_information = ArrayField(
+        models.CharField(blank=True, max_length=255)
+    )
+
     motorway = models.CharField(choices=motorway_options, max_length=4)
     direction = models.CharField(max_length=1, choices=direction_options)
     metadata = models.CharField(max_length=255)
