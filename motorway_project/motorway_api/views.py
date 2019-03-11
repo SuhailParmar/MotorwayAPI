@@ -9,7 +9,6 @@ from oauth2_provider.contrib.rest_framework import TokenHasScope, \
 from .models import MotorwayEvent
 from .serializers import MotorwayEventSerializer
 from rest_framework.response import Response
-from .graphs import Graphs
 import logging
 
 """
