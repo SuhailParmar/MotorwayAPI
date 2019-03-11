@@ -1,6 +1,7 @@
 Django==2.1.2
 djangorestframework==3.9.0
 django-oauth-toolkit==1.2.0
+django-cors-headers==2.5.0
 py==1.7.0
 pytest==3.9.3
 psycopg2==2.7.5
