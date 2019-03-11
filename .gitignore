@@ -2,7 +2,7 @@ __pycache__/
 .pytest_cache
 *.pyc
 *.log
-motorway_env
+.env
 motorway_db/db-config.sh
 motorway_db/pg_data/*
 motorway_project/.env
