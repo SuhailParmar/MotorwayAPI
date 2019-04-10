@@ -24,13 +24,13 @@ class TestDeleteEndpoint():
         # Post one event to the db
         json_payload = e.build_payload()
         token = self.client.get_auth_token(scope='write')
-        status_code = self.client.post_event(json_payload, token)
-        assert status_code == 201
+        r = self.client.post_event(json_payload, token)
+        assert r.status_code == 201
 
         # Post a second event to the db
         json_payload["event_id"] = self.event_id_2
-        status_code = self.client.post_event(json_payload, token)
-        assert status_code == 201
+        r = self.client.post_event(json_payload, token)
+        assert r.status_code == 201
 
     def test_clear_down(self):
         token = self.client.get_auth_token(scope='delete')

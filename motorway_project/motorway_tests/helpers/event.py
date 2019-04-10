@@ -36,12 +36,13 @@ class Event():
             "metadata": self.metadata,
             "motorway": self.motorway,
             "reason": self.reason,
-            "time_day_numerical": self.time_day_numerical,
+            "time_day": self.time_day_numerical,
             "time_day_worded": self.time_day_worded,
             "time_hour": self.time_hour,
             "time_minutes": self.time_minutes,
             "time_seconds": self.time_seconds,
             "time_timestamp": self.time_timestamp,
-            "time_year": self.time_year
+            "time_year": self.time_year,
+            "extra_information": []
         }
         return payload

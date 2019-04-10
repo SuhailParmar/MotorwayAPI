@@ -53,10 +53,10 @@ class APIRequests():
         return content['access_token']
 
     def get_filtered(self, token,  param, return_status=True):
-        url = self.base_url + self.events_ep
+        url = self.base_url + self.events_ep + str(param)
+        print(url)
         response = get(url, headers={'Content-Type': 'application/json',
-                                     'Authorization': "Bearer {0}".format(token)},
-                       params=param)
+                                     'Authorization': "Bearer {0}".format(token)})
 
         if return_status:
             return response.status_code
@@ -90,10 +90,10 @@ class APIRequests():
         if request.status_code == 400:
             if loads(request.content) ==\
                     {'event_id': ['motorway event with this event id already exists.']}:
-                print(
-                    "Event {0} already pre-exists :)".format(json_payload['event_id']))
-                return 201
 
-        if return_status:
-            return request.status_code
-        return loads(request.content)
+                self.delete_event(json_payload["event_id"], token)
+                r = self.post_event(json_payload, token, return_status)
+                return r
+
+        return request
+        # return loads(request.content)

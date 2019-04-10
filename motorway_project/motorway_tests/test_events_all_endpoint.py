@@ -25,12 +25,12 @@ class TestEventsAllEndpoint:
         # Post one event to the db
         json_payload = e.build_payload()
         token = self.client.get_auth_token(scope='write')
-        status_code = self.client.post_event(json_payload, token)
+        status_code = self.client.post_event(json_payload, token).status_code
         assert status_code == 201
 
         # Post a second event to the db
         json_payload["event_id"] = self.event_id_2
-        status_code = self.client.post_event(json_payload, token)
+        status_code = self.client.post_event(json_payload, token).status_code
         assert status_code == 201
 
     def test_events_all_endpoint(self):
