@@ -3,7 +3,7 @@ attrs==19.1.0
 certifi==2018.11.29
 chardet==3.0.4
 cycler==0.10.0
-Django==2.1.2
+Django==2.2.13
 django-cors-headers==2.5.0
 django-oauth-toolkit==1.2.0
 djangorestframework==3.9.0
